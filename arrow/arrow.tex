@@ -1,0 +1,203 @@
+%%
+%%
+%%
+
+\documentclass[cjk,dvipdfm,12pt]{beamer}
+\usetheme{Hibi}
+\usefonttheme{professionalfonts}
+\usepackage{packages}
+
+%%\mathversion{bold}
+
+\AtBeginDvi{\special{pdf:tounicode EUC-UCS2}}
+
+\title{HaskellのArrowの紹介}
+\subtitle{初心者Haskell勉強会}
+\author{日比野 啓}
+\date{2011年05月25日}
+
+\begin{document}
+
+\lstset{language=Haskell,basicstyle=\small\ttfamily}
+  %% commentstyle=\textit,%
+  %% classoffset=1,%
+  %% keywordstyle=\bfseries,%
+  %% frame=tRBl,framesep=5pt,%
+  %% showstringspaces=false,%
+  %% numbers=left,stepnumber=1,numberstyle=\footnotesize%
+
+
+\frame{\titlepage{}}
+
+\begin{frame}
+\frametitle{今回の流れ}
+
+\begin{itemize}
+\item Arrowってどんなもの
+\item Arrowでどんなことができるのか
+\item Arrowを作るには
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{今回の流れ}
+
+\begin{itemize}
+\item {\color{red} Arrowってどんなもの}
+\item Arrowでどんなことができるのか
+\item Arrowを作るには
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Arrowってどんなもの}
+
+適当に説明すると \\
+Arrow とは入力があって出力があるもの
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Arrowってどんな型}
+
+例えば関数は Arrow です
+
+\begin{lstlisting}
+foo0 :: b -> c
+foo1 :: (->) b c
+
+-- (->) は2引数の Type Constructor
+--  Either a b とか見たことありますよね?
+
+-- (->) を Arrow a であるような a と置き換えると
+foo2 :: Arrow a => a b c
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+\frametitle{今回の流れ}
+
+\begin{itemize}
+\item Arrowってどんなもの
+\item {\color{red} Arrowでどんなことができるのか}
+\item Arrowを作るには
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Arrowでどんなことができるのか}
+
+データフローっぽいものが書けます\\
+論理回路とか
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{準備}
+
+Arrow であるようなオブジェクトが用意されているときは arr で関数から変換することができます
+
+\begin{lstlisting}
+arr :: Arrow a => (b -> c) -> a b c
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{回路の例 - and}
+
+\includegraphics[height=1cm]{./And0.png}\\
+
+\begin{itemize}
+\item Arrow 記法
+\item ここで Auto は Arrow になっています
+\end{itemize}
+
+\begin{lstlisting}
+and2 :: (Bool, Bool) -> Bool
+and2 = uncurry (&&)
+
+and' :: Auto (Bool, Bool) Bool
+and' = proc (i0, i1) -> do
+         o0 <- arr and2 -< (i0, i1)
+         id -< o0
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{回路の例 - and}
+
+\includegraphics[height=1cm]{./And0.png}\\
+
+\begin{itemize}
+\item Arrow 記法
+\item ここで Auto は Arrow になっています
+\end{itemize}
+
+\begin{lstlisting}
+and2 :: (Bool, Bool) -> Bool
+and2 = uncurry (&&)
+
+and'' :: Auto (Bool, Bool) Bool
+and'' = proc (i0, i1) -> do
+         arr and2 -< (i0, i1)
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{回路の例 - and}
+
+\includegraphics[height=1cm]{./And0.png}\\
+
+\begin{itemize}
+\item Arrow 記法
+\item ここで Auto は Arrow になっています
+\end{itemize}
+
+\begin{lstlisting}
+and2 :: (Bool, Bool) -> Bool
+and2 = uncurry (&&)
+
+and''' :: Auto (Bool, Bool) Bool
+and''' =  arr and2
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{回路の例 - half adder}
+
+\begin{lstlisting}
+xor :: Auto (Bool, Bool) Bool
+xor =  proc i -> do
+         m0 <- nand -< i 
+         m1 <- or'  -< i
+         and' -< (m0, m1)
+
+hAdder :: Auto (Bool, Bool) (Bool, Bool)
+hAdder =  
+  proc i -> do
+    o0 <- xor  -< i
+    o1 <- and' -< i
+    id -< (o1, o0)
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+
+\begin{itemize}
+\item Arrowってどんなもの
+\item Arrowでどんなことができるのか
+\item {\color{red} Arrowを作るには}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\end{frame}
+
+\end {document}
