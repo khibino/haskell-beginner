@@ -5,9 +5,20 @@ HC = ghc
 	$(HC) -Wall -c $<
 
 %: %.hs
-	ghc --make $@
+	ghc -Wall --make $@
 
-all: number0 number1
+programs = number0 number1 rpncalc1
+
+targets = \
+	Stack.o \
+	$(programs)
+
+all: $(targets)
+
+test: all
+	./number0 < ../Community-Okabe2011/Projects/number/testdata/en.in
+	./number1 < ../Community-Okabe2011/Projects/number/testdata/en.in
 
 clean:
 	$(RM) *.hi *.o
+	$(RM) $(programs)
