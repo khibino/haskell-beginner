@@ -3,7 +3,7 @@ import System.IO (isEOF)
 import Data.IORef (newIORef, readIORef, modifyIORef)
 
 number :: IO ()
-number =  newIORef 1 >>= rec
+number =  newIORef (1 :: Int) >>= rec
   where rec counter = do eof <- isEOF
                          case eof of
                            False -> do l <- getLine
