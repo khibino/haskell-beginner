@@ -11,5 +11,5 @@ number =  rec
   
 main :: IO ()
 main =  do lines' <- fmap lines getContents
-           putStrLn $ unlines $ snd $
+           mapM_ putStrLn $ snd $
              execState (number lines') (1, [])
