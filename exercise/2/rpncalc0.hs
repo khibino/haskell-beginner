@@ -1,9 +1,8 @@
 
 import Prelude hiding (head, tail, div, drop)
-import System.IO (isEOF, hFlush, stdout)
-import Data.IORef (newIORef, readIORef, writeIORef)
-import Control.Monad(when)
+import System.IO (hFlush, stdout)
 import Stack (Stack(..), SimpleStack)
+import Control.Monad.State (MonadState(..), State, execState)
 
 type CalcState = SimpleStack Float
 
@@ -35,6 +34,8 @@ plus, subt, mult, div, clear, drop, swap :: CalcState -> CalcState
 display :: CalcState -> IO ()
 display =  print . head
 
+
+
 calcStep :: CalcState -> String -> (CalcState, IO ())
 calcStep stack = proc
   where pure fun = (fun stack, toIO ())
@@ -49,20 +50,16 @@ calcStep stack = proc
         proc "debugDump" = (stack, putStr (dump stack) >> hFlush stdout)
         proc num     = pure (cons (read num :: Float))
 
-calc :: IO ()
-calc = newIORef empty >>= run
-  where run stateRef = loop
-          where loop = do eof <- isEOF
-                          when (not eof) $
-                            do line <- getLine
-                               runWords (words line)
-                               loop
-                runWords (w:ws) = do state0 <- readIORef stateRef
-                                     let (state1, act) = calcStep state0 w in
-                                       do writeIORef stateRef state1
-                                          act 
-                                          runWords ws
-                runWords  []    = toIO ()
+type CalcAction = (CalcState, [IO ()])
 
+calc :: [String] -> State CalcAction CalcAction
+calc lines' = rec $ concatMap words lines'
+  where rec (w:ws) = do (st0, acts) <- get
+                        let (st1, act) = calcStep st0 w in
+                          put (st1, acts ++ [act])
+                        rec ws
+        rec []     = get
+    
 main :: IO ()
-main =  calc
+main = do lines' <- fmap lines getContents
+          sequence_ $ snd $ execState (calc lines') (empty, [])
