@@ -7,7 +7,7 @@ HC = ghc
 %: %.hs
 	ghc -Wall --make $@
 
-programs = number0 number1 rpncalc0 rpncalc1
+programs = number0 number1 number2 rpncalc0 rpncalc1 rpncalc2
 
 targets = \
 	Stack.o \
