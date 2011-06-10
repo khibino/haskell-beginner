@@ -1,4 +1,5 @@
-
+-- number utility
+-- IOで命令型プログラミング
 import System.IO (isEOF)
 import Data.IORef (newIORef, readIORef, modifyIORef)
 

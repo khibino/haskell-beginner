@@ -1,4 +1,5 @@
-
+-- 逆ポーランド記法電卓
+-- スタック状態と全アクションを State モナドに保存
 import Prelude hiding (head, tail, div, drop)
 import System.IO (hFlush, stdout)
 import Stack (Stack(..), SimpleStack)

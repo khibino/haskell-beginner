@@ -1,4 +1,5 @@
-
+-- number utility
+-- 全状態を State モナドに保存
 import Control.Monad.State (MonadState(..), State, execState)
 
 number :: [String] -> State (Int, [String]) (Int, [String])

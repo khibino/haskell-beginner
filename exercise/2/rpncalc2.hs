@@ -1,4 +1,5 @@
-
+-- 逆ポーランド記法電卓
+-- 電卓スタックのみを State モナドに保存
 import Prelude hiding (head, tail, div, drop)
 import Stack (Stack(..), SimpleStack)
 import Control.Monad.State (MonadState(..), State, evalState)

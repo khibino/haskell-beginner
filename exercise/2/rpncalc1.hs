@@ -1,4 +1,5 @@
-
+-- 逆ポーランド記法電卓
+-- IOで命令型プログラミング
 import Prelude hiding (head, tail, div, drop)
 import System.IO (isEOF, hFlush, stdout)
 import Data.IORef (newIORef, readIORef, writeIORef)

@@ -1,4 +1,5 @@
-
+-- number utility
+-- カウンタのみを State モナドに保存
 import Control.Monad.State (MonadState(..), State, evalState, modify)
 
 number :: String -> State Int String
