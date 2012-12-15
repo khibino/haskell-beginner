@@ -1,6 +1,6 @@
 
 %.pdf: %.dvi
-	dvipdfmx $(@:.pdf=.dvi)
+	dvipdfmx -f cid-embed $(@:.pdf=.dvi)
 
 %.dvi %.log %.aux: %.tex
 	platex $<
